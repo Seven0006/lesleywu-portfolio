@@ -1,103 +1,60 @@
 package com.example;
 
-import javafx.application.Application;
+import javafx.geometry.*;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.sql.*;
+public class FinanceDashboard {
 
-public class FinanceDashboard extends Application {
+    private final User currentUser;
 
-    // Database connection details
-    private static final String URL = "jdbc:postgresql://localhost:5432/mydb";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "mysecretpassword";
-
-    private TextField nameField = new TextField();
-    private TextField emailField = new TextField();
-
-    public static void main(String[] args) {
-        launch(args); // Launch JavaFX Application
+    // 接收登录成功的用户对象
+    public FinanceDashboard(User user) {
+        this.currentUser = user;
     }
 
-    @Override
-    public void start(Stage stage) {
-        VBox root = new VBox(10);
-        root.setStyle("-fx-padding: 15");
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Personal Finance Management - Dashboard");
 
-        Label title = new Label("📋 Registered Users");
+        // 按钮
+        Button userInfoBtn = new Button("User Information");
+        Button financialAnalysisBtn = new Button("Financial Analysis");
+        Button transactionEntryBtn = new Button("Transaction Entry");
+        Button financialOverviewBtn = new Button("Financial Overview");
 
-        // List to show all users
-        ListView<String> userList = new ListView<>();
-        loadUsers(userList); // Load from DB
+        userInfoBtn.setPrefWidth(200);
+        financialAnalysisBtn.setPrefWidth(200);
+        transactionEntryBtn.setPrefWidth(200);
+        financialOverviewBtn.setPrefWidth(200);
 
-        // Input form to add a new user
-        nameField.setPromptText("Name");
-        emailField.setPromptText("Email");
-        Button addButton = new Button("Add User");
-        addButton.setOnAction(e -> {
-            insertUser(nameField.getText(), emailField.getText());
-            loadUsers(userList); // Refresh
-            nameField.clear();
-            emailField.clear();
+        // 按钮逻辑
+        userInfoBtn.setOnAction(e -> {
+            UserInfoScreen infoScreen = new UserInfoScreen(currentUser);
+            infoScreen.show();
         });
 
-        HBox form = new HBox(10, nameField, emailField, addButton);
+        transactionEntryBtn.setOnAction(e -> {
+            new TransactionEntryScreen(currentUser).show();
+        });
+        
 
-        root.getChildren().addAll(title, userList, new Label("➕ Add New User"), form);
+        // 布局
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(30));
+        grid.setHgap(20);
+        grid.setVgap(20);
+        grid.setAlignment(Pos.CENTER);
 
-        // Set scene and show
-        Scene scene = new Scene(root, 450, 400);
-        stage.setScene(scene);
-        stage.setTitle("Personal Finance Management System - Dashboard");
-        stage.show();
-    }
+        grid.add(userInfoBtn, 0, 0);
+        grid.add(financialAnalysisBtn, 1, 0);
+        grid.add(transactionEntryBtn, 0, 1);
+        grid.add(financialOverviewBtn, 1, 1);
 
-    // Load users from PostgreSQL and show in ListView
-    private void loadUsers(ListView<String> list) {
-        list.getItems().clear();
-        String sql = "SELECT * FROM users;";
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            System.out.println("Connected to database");
-            while (rs.next()) {
-                String entry = rs.getInt("id") + " | " + rs.getString("name") + " | " + rs.getString("email");
-                list.getItems().add(entry);
-            }
-        } catch (Exception e) {
-            list.getItems().add("❌ Error: " + e.getMessage());
-        }
-    }
-
-    // Insert a new user into database
-    private void insertUser(String name, String email) {
-        if (name.isEmpty() || email.isEmpty()) {
-            showAlert("Validation Error", "Name and email cannot be empty.");
-            return;
-        }
-
-        String sql = "INSERT INTO users (name, email) VALUES (?, ?)";
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, name);
-            pstmt.setString(2, email);
-            pstmt.executeUpdate();
-
-        } catch (Exception e) {
-            showAlert("Database Error", e.getMessage());
-        }
-    }
-
-    // Helper: show error/info dialog
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        // 显示场景
+        Scene scene = new Scene(grid, 500, 350);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

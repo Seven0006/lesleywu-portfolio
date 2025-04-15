@@ -76,6 +76,24 @@ public class User {
         return false;
     }
 
+    // 更新用户名和密码
+    public boolean updateUserInfo(String newName, String newPassword) {
+        String sql = "UPDATE users SET name = ?, password = ? WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newName);
+            stmt.setString(2, newPassword);
+            stmt.setInt(3, id); // 用 ID 定位用户
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            System.out.println("❌ Update failed: " + e.getMessage());
+            return false;
+        }
+    }
+
     public void viewProfile() {
         System.out.println("👤 Profile:");
         System.out.println("Name: " + name);
