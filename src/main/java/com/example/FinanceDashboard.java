@@ -39,6 +39,14 @@ public class FinanceDashboard {
             new TransactionEntryScreen(currentUser).show();
         });
         
+        financialAnalysisBtn.setOnAction(e -> {
+            new FinancialAnalysisScreen().start(new Stage());
+        });
+
+        financialOverviewBtn.setOnAction(e -> {
+            new FinancialOverviewScreen().start(new Stage());
+        });
+
 
         // 布局
         GridPane grid = new GridPane();

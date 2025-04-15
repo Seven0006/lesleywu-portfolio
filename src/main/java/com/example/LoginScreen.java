@@ -36,11 +36,17 @@ public class LoginScreen extends Application {
             if (u.loginUser()) {
                 showAlert("✅ Login successful", "Welcome, " + user + "!");
             
-                // 登录成功后跳转 FinanceDashboard，并传入当前用户
-                FinanceDashboard dashboard = new FinanceDashboard(u);
-                dashboard.start(new Stage());
-            
-                ((Stage) signInButton.getScene().getWindow()).close();
+                Stage nextStage = new Stage();
+                try {
+                    if ("admin".equalsIgnoreCase(u.getRole())) {
+                        new AdminDashboardScreen().start(nextStage); // 👈 Admin 跳转
+                    } else {
+                        new FinanceDashboard(u).start(nextStage); // 👈 普通用户跳转
+                    }
+                    ((Stage) signInButton.getScene().getWindow()).close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
             } else {
                 showAlert("❌ Login failed", "Invalid username or password.");

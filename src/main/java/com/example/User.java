@@ -67,6 +67,7 @@ public class User {
             if (rs.next()) {
                 this.id = rs.getInt("id");
                 this.email = rs.getString("email");
+                this.role = rs.getString("role");
                 return true;
             }
 
