@@ -72,7 +72,8 @@
       <artifactId>javafx-maven-plugin</artifactId>
       <version>0.0.8</version>
       <configuration>
-        <mainClass>com.example.FinanceDashboard</mainClass> <!-- 改为你的 JavaFX 启动类 -->
+        <mainClass>com.example.FinanceDashboard</mainClass> 
+        <mainClass>com.example.LoginScreen</mainClass>
       </configuration>
       </plugin>
     </plugins>
