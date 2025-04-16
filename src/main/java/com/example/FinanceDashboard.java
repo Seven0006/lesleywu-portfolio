@@ -40,11 +40,11 @@ public class FinanceDashboard {
         });
         
         financialAnalysisBtn.setOnAction(e -> {
-            new FinancialAnalysisScreen().start(new Stage());
+            new FinancialAnalysisScreen(currentUser).start(new Stage());
         });
 
         financialOverviewBtn.setOnAction(e -> {
-            new FinancialOverviewScreen().start(new Stage());
+            new FinancialOverviewScreen(currentUser).start(new Stage());
         });
 
 

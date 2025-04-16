@@ -8,13 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.FileChooser;
 import java.io.File;
-import java.io.PrintWriter;
-
-
-import java.io.File;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.time.LocalDate;
@@ -31,6 +25,11 @@ public class FinancialOverviewScreen extends Application {
 
     private VBox transactionList = new VBox(10);
     private ComboBox<String> monthSelector = new ComboBox<>();
+    private User currentUser;
+
+    public FinancialOverviewScreen(User user) {
+        this.currentUser = user;
+    }
 
     @Override
     public void start(Stage stage) {
@@ -53,47 +52,7 @@ public class FinancialOverviewScreen extends Application {
         scrollPane.setPrefHeight(250);
 
         Button exportButton = new Button("Export");
-        // exportButton.setOnAction(e -> exportToCSV());
-        exportButton.setOnAction(e -> {
-            String selected = monthSelector.getValue();
-            if (selected == null) return;
-
-            String[] parts = selected.split(" ");
-            String month = parts[0].toUpperCase();
-            int year = Integer.parseInt(parts[1]);
-
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save CSV File");
-            fileChooser.setInitialFileName("overview-" + month + "-" + year + ".csv");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-            File file = fileChooser.showSaveDialog(stage);
-
-            if (file != null) {
-                try (PrintWriter writer = new PrintWriter(file)) {
-                    writer.println("Date,Income,Expense,Balance");
-
-                    for (javafx.scene.Node node : transactionList.getChildren()) {
-                        if (node instanceof Label) {
-                            String text = ((Label) node).getText();
-                            if (text.startsWith("Date:")) {
-                                // 解析 Label 的内容
-                                String[] partsText = text.split("\\s+");
-                                String date = partsText[1];
-                                String income = partsText[3].replace("$", "");
-                                String expense = partsText[5].replace("$", "");
-                                String balance = partsText[7].replace("$", "");
-                                writer.printf("%s,%s,%s,%s\n", date, income, expense, balance);
-                            }
-                        }
-                    }
-
-                    transactionList.getChildren().add(new Label("✅ Exported to " + file.getName()));
-                } catch (Exception ex) {
-                    transactionList.getChildren().add(new Label("❌ Export failed: " + ex.getMessage()));
-                }
-            }
-        });
-
+        exportButton.setOnAction(e -> exportToCSV(stage));
 
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> stage.close());
@@ -135,7 +94,7 @@ public class FinancialOverviewScreen extends Application {
         int year = Integer.parseInt(parts[1]);
 
         String sql = "SELECT date, type, SUM(amount) FROM transactions " +
-                     "WHERE EXTRACT(MONTH FROM date) = ? AND EXTRACT(YEAR FROM date) = ? " +
+                     "WHERE user_id = ? AND EXTRACT(MONTH FROM date) = ? AND EXTRACT(YEAR FROM date) = ? " +
                      "GROUP BY date, type ORDER BY date DESC";
 
         Map<LocalDate, Double> incomeMap = new HashMap<>();
@@ -144,8 +103,9 @@ public class FinancialOverviewScreen extends Application {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, Month.valueOf(month).getValue());
-            stmt.setInt(2, year);
+            stmt.setInt(1, currentUser.getId());
+            stmt.setInt(2, Month.valueOf(month).getValue());
+            stmt.setInt(3, year);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -177,7 +137,7 @@ public class FinancialOverviewScreen extends Application {
         }
     }
 
-    private void exportToCSV() {
+    private void exportToCSV(Stage stage) {
         String selected = monthSelector.getValue();
         if (selected == null) return;
 
@@ -185,55 +145,38 @@ public class FinancialOverviewScreen extends Application {
         String month = parts[0].toUpperCase();
         int year = Integer.parseInt(parts[1]);
 
-        String sql = "SELECT date, type, SUM(amount) as total FROM transactions " +
-                     "WHERE EXTRACT(MONTH FROM date) = ? AND EXTRACT(YEAR FROM date) = ? " +
-                     "GROUP BY date, type ORDER BY date DESC";
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save CSV File");
+        fileChooser.setInitialFileName("overview-" + month + "-" + year + ".csv");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(stage);
 
-        Map<LocalDate, Double> incomeMap = new HashMap<>();
-        Map<LocalDate, Double> expenseMap = new HashMap<>();
+        if (file != null) {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.println("Date,Income,Expense,Balance");
 
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, Month.valueOf(month).getValue());
-            stmt.setInt(2, year);
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                LocalDate date = rs.getDate("date").toLocalDate();
-                String type = rs.getString("type");
-                double total = rs.getDouble("total");
-                if ("income".equalsIgnoreCase(type)) {
-                    incomeMap.put(date, total);
-                } else {
-                    expenseMap.put(date, total);
+                for (javafx.scene.Node node : transactionList.getChildren()) {
+                    if (node instanceof Label) {
+                        String text = ((Label) node).getText();
+                        if (text.startsWith("Date:")) {
+                            String[] partsText = text.split("\\s+");
+                            String date = partsText[1];
+                            String income = partsText[3].replace("$", "");
+                            String expense = partsText[5].replace("$", "");
+                            String balance = partsText[7].replace("$", "");
+                            writer.printf("%s,%s,%s,%s\n", date, income, expense, balance);
+                        }
+                    }
                 }
+
+                transactionList.getChildren().add(new Label("\u2705 Exported to " + file.getName()));
+            } catch (Exception ex) {
+                transactionList.getChildren().add(new Label("\u274C Export failed: " + ex.getMessage()));
             }
-
-            String fileName = "overview-" + month + "-" + year + ".csv";
-            try (FileWriter writer = new FileWriter(fileName)) {
-                writer.write("Date,Income,Expense,Balance\n");
-                Set<LocalDate> allDates = new HashSet<>();
-                allDates.addAll(incomeMap.keySet());
-                allDates.addAll(expenseMap.keySet());
-                List<LocalDate> sorted = allDates.stream().sorted().collect(Collectors.toList());
-
-                for (LocalDate d : sorted) {
-                    double income = incomeMap.getOrDefault(d, 0.0);
-                    double expense = expenseMap.getOrDefault(d, 0.0);
-                    double balance = income - expense;
-                    writer.write(d + "," + income + "," + expense + "," + balance + "\n");
-                }
-            }
-
-            transactionList.getChildren().add(new Label("\u2705 Exported to " + fileName));
-
-        } catch (Exception e) {
-            transactionList.getChildren().add(new Label("\u274C Export failed: " + e.getMessage()));
         }
     }
 
     public static void main(String[] args) {
-        launch(args);
+        // launch(args);
     }
 }

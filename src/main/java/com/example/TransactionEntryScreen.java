@@ -39,7 +39,7 @@ public class TransactionEntryScreen {
         // 分类选择
         Label categoryLabel = new Label("Category:");
         ComboBox<String> categoryBox = new ComboBox<>();
-        categoryBox.getItems().addAll("Food", "Shopping", "Car", "House", "Salary", "Transportation", "Other");
+        categoryBox.getItems().addAll("Food", "Shopping", "Car", "Rent", "Salary", "Transportation", "Sport", "Other");
 
         // 金额输入
         Label amountLabel = new Label("Amount:");

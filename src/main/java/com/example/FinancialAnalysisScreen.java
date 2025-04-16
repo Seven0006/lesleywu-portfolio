@@ -24,6 +24,12 @@ public class FinancialAnalysisScreen extends Application {
     private static final String USER = "postgres";
     private static final String PASSWORD = "mysecretpassword";
 
+    private User currentUser;
+
+    public FinancialAnalysisScreen(User user) {
+        this.currentUser = user;
+    }
+
     @Override
     public void start(Stage stage) {
         BorderPane root = new BorderPane();
@@ -75,11 +81,13 @@ public class FinancialAnalysisScreen extends Application {
     private Map<String, Double> loadCategoryTotals() {
         Map<String, Double> totals = new HashMap<>();
         String sql = "SELECT category, SUM(amount) FROM transactions " +
-                     "WHERE type = 'expense' AND date_trunc('month', date) = date_trunc('month', CURRENT_DATE) " +
+                     "WHERE user_id = ? AND type = 'expense' AND date_trunc('month', date) = date_trunc('month', CURRENT_DATE) " +
                      "GROUP BY category";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, currentUser.getId());
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 String category = rs.getString(1);
