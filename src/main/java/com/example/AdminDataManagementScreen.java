@@ -35,7 +35,7 @@ public class AdminDataManagementScreen extends Application {
         Label title = new Label("Data Information");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // 月份选择器
+        // choose month
         List<String> monthOptions = getRecentMonths(6);
         monthSelector.getItems().addAll(monthOptions);
         monthSelector.setValue(monthOptions.get(0));
@@ -56,7 +56,7 @@ public class AdminDataManagementScreen extends Application {
             AdminDashboardScreen dashboard = new AdminDashboardScreen();
             try {
                 dashboard.start(new Stage());
-                ((Stage) backButton.getScene().getWindow()).close(); // 关闭当前页面
+                ((Stage) backButton.getScene().getWindow()).close(); // close current window
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -9,39 +9,50 @@ A JavaFX desktop GUI application that allows users to manage their personal fina
 ### 1. Clone this repository
 
 ```bash
-git clone < https://github.com/Seven0006/5100-Final-Project.git >
+git clone https://github.com/Seven0006/5100-Final-Project.git 
+
 cd your-repo-folder
 ```
 
 ---
 
-### 🔧 Option 1: Run using Docker
+## 💻 Running Locally via JavaFX + Maven
 
-#### 🐳 Build Docker image:
+### 1. Prerequisites
+
+- [Java 17 or later](https://bell-sw.com/pages/downloads/#mac)
+- [Maven](https://maven.apache.org/download.cgi)
+- [PostgreSQL](https://www.postgresql.org/download/macosx/)
+
+### 2. Install PostgreSQL (macOS via Homebrew)
 
 ```bash
-docker build -t finance-app .
+brew install postgresql
+brew services start postgresql
 ```
 
-#### ▶️ Run container (PostgreSQL + App):
+Then create the required database and user:
 
 ```bash
-docker run -it --rm -p 5432:5432 finance-app
+psql postgres
+```
+Run below command one by one:
+```sql
+CREATE DATABASE mydb;
+CREATE USER postgres WITH PASSWORD 'mysecretpassword';
+GRANT ALL PRIVILEGES ON DATABASE mydb TO postgres;
+\q
 ```
 
-> GUI requires a desktop-enabled Docker or host integration (for JavaFX to open windows).
+### 3. Build and Run the App
+
+```bash
+mvn clean javafx:run
+```
+
+💡 Upon startup, the program will automatically create all required tables (e.g., `users`, `transactions`) if they do not exist.
 
 ---
-
-### ⚙️ Option 2: Run locally with Maven
-
-Ensure you have Java 17+ and Maven installed.
-
-```bash
-mvn clean install
-mvn javafx:run
-```
-
 > JavaFX SDK setup may be required in your IDE or via `pom.xml`.
 
 ---

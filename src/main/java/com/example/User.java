@@ -11,9 +11,9 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String role = "user"; // 默认普通用户
+    private String role = "user"; // default role
 
-    // 构造函数
+    // initialization
     public User() {}
 
     public User(String name, String email, String password) {
@@ -22,7 +22,7 @@ public class User {
         this.password = password;
     }
 
-    // 注册方法
+    // register method
     public boolean registerUser() {
         if (userExists()) return false;
 
@@ -54,7 +54,7 @@ public class User {
         }
     }
 
-    // 登录方法
+    // login method
     public boolean loginUser() {
         String sql = "SELECT * FROM users WHERE name = ? AND password = ?";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -77,7 +77,7 @@ public class User {
         return false;
     }
 
-    // 更新用户名和密码
+    // update current user info
     public boolean updateUserInfo(String newName, String newPassword) {
         String sql = "UPDATE users SET name = ?, password = ? WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -85,7 +85,7 @@ public class User {
 
             stmt.setString(1, newName);
             stmt.setString(2, newPassword);
-            stmt.setInt(3, id); // 用 ID 定位用户
+            stmt.setInt(3, id); // use id to update the correct user
             int rows = stmt.executeUpdate();
             return rows > 0;
 
@@ -102,7 +102,7 @@ public class User {
         System.out.println("Role: " + role);
     }
 
-    // Getter 和 Setter
+    // Getter and Setter
     public int getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }

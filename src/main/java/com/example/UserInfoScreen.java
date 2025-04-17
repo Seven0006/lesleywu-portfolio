@@ -34,13 +34,13 @@ public class UserInfoScreen {
         Button saveButton = new Button("Save");
         Button backButton = new Button("Back");
 
-        // 点击 Edit 开启编辑
+        // click Edit → fields editable
         editButton.setOnAction(e -> {
             usernameField.setEditable(true);
             passwordField.setEditable(true);
         });
 
-        // 点击 Save 写入数据库
+        // click Save → update user info
         saveButton.setOnAction(e -> {
             String newName = usernameField.getText().trim();
             String newPass = passwordField.getText().trim();

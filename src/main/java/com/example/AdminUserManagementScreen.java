@@ -42,7 +42,7 @@ public class AdminUserManagementScreen extends Application {
             AdminDashboardScreen dashboard = new AdminDashboardScreen();
             try {
                 dashboard.start(new Stage());
-                ((Stage) backButton.getScene().getWindow()).close(); // 关闭当前页面
+                ((Stage) backButton.getScene().getWindow()).close(); // close current window
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

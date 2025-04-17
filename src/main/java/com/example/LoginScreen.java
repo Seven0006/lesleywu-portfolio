@@ -39,9 +39,9 @@ public class LoginScreen extends Application {
                 Stage nextStage = new Stage();
                 try {
                     if ("admin".equalsIgnoreCase(u.getRole())) {
-                        new AdminDashboardScreen().start(nextStage); // 👈 Admin 跳转
+                        new AdminDashboardScreen().start(nextStage); // to admin dashboard
                     } else {
-                        new FinanceDashboard(u).start(nextStage); // 👈 普通用户跳转
+                        new FinanceDashboard(u).start(nextStage); // to user dashboard
                     }
                     ((Stage) signInButton.getScene().getWindow()).close();
                 } catch (Exception ex) {
@@ -97,6 +97,7 @@ public class LoginScreen extends Application {
     }
 
     public static void main(String[] args) {
+        DatabaseInitializer.initialize();
         launch(args);
     }
 }

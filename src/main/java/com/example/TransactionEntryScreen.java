@@ -24,10 +24,10 @@ public class TransactionEntryScreen {
         Label title = new Label("Transaction Entry");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // 日期自动显示
+        // automatic date
         Label dateLabel = new Label("Date: " + LocalDate.now());
 
-        // 类型选择
+        // choice of income or expense
         Label typeLabel = new Label("Type:");
         ToggleGroup typeGroup = new ToggleGroup();
         RadioButton incomeRadio = new RadioButton("Income");
@@ -36,27 +36,27 @@ public class TransactionEntryScreen {
         expenseRadio.setToggleGroup(typeGroup);
         HBox typeBox = new HBox(10, incomeRadio, expenseRadio);
 
-        // 分类选择
+        // category selection
         Label categoryLabel = new Label("Category:");
         ComboBox<String> categoryBox = new ComboBox<>();
         categoryBox.getItems().addAll("Food", "Shopping", "Car", "Rent", "Salary", "Transportation", "Sport", "Other");
 
-        // 金额输入
+        // amount input
         Label amountLabel = new Label("Amount:");
         TextField amountField = new TextField();
 
-        // 按钮
+        // buttons
         Button saveBtn = new Button("Save");
         Button editBtn = new Button("Edit");
         Button cancelBtn = new Button("Cancel");
 
-        // 初始禁用
+        // disable editing initially
         categoryBox.setDisable(true);
         amountField.setEditable(false);
         incomeRadio.setDisable(true);
         expenseRadio.setDisable(true);
 
-        // Edit → 启用编辑
+        // Edit → buttons enabled
         editBtn.setOnAction(e -> {
             incomeRadio.setDisable(false);
             expenseRadio.setDisable(false);
@@ -64,7 +64,7 @@ public class TransactionEntryScreen {
             amountField.setEditable(true);
         });
 
-        // Save → 存入数据库
+        // Save → to database
         saveBtn.setOnAction(e -> {
             String type = incomeRadio.isSelected() ? "income" :
                           expenseRadio.isSelected() ? "expense" : null;
@@ -85,7 +85,7 @@ public class TransactionEntryScreen {
                 return;
             }
 
-            // 插入数据库
+            // insert transaction into database
             boolean success = insertTransaction(currentUser.getId(), amount, category, type);
             if (success) {
                 showAlert("Success", "Transaction saved.");
@@ -97,7 +97,7 @@ public class TransactionEntryScreen {
 
         cancelBtn.setOnAction(e -> stage.close());
 
-        // 布局
+        // layout
         GridPane grid = new GridPane();
         grid.setVgap(10);
         grid.setHgap(10);

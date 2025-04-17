@@ -12,7 +12,7 @@ public class AdminDashboardScreen extends Application {
 
     @Override
     public void start(Stage stage) {
-        // 两个主按钮
+        // two main buttons
         Button userManagementBtn = new Button("User Management");
         Button dataManagementBtn = new Button("Data Management");
 
@@ -24,7 +24,7 @@ public class AdminDashboardScreen extends Application {
         userManagementBtn.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         dataManagementBtn.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
-        // 布局
+        // layout
         HBox buttonBox = new HBox(30, userManagementBtn, dataManagementBtn);
         buttonBox.setAlignment(Pos.CENTER);
 
@@ -32,7 +32,7 @@ public class AdminDashboardScreen extends Application {
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(50));
 
-        // 按钮逻辑（稍后实现）
+        // button actions
         userManagementBtn.setOnAction(e -> {
             AdminUserManagementScreen userScreen = new AdminUserManagementScreen();
             try {
@@ -53,7 +53,7 @@ public class AdminDashboardScreen extends Application {
             }
         });
 
-        // 场景
+        // scene setup
         Scene scene = new Scene(root, 600, 300);
         stage.setScene(scene);
         stage.setTitle("Admin Dashboard");

@@ -10,7 +10,7 @@ public class FinanceDashboard {
 
     private final User currentUser;
 
-    // 接收登录成功的用户对象
+    // receive user information from login screen
     public FinanceDashboard(User user) {
         this.currentUser = user;
     }
@@ -18,7 +18,7 @@ public class FinanceDashboard {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Personal Finance Management - Dashboard");
 
-        // 按钮
+        // buttons
         Button userInfoBtn = new Button("User Information");
         Button financialAnalysisBtn = new Button("Financial Analysis");
         Button transactionEntryBtn = new Button("Transaction Entry");
@@ -29,7 +29,7 @@ public class FinanceDashboard {
         transactionEntryBtn.setPrefWidth(200);
         financialOverviewBtn.setPrefWidth(200);
 
-        // 按钮逻辑
+        // button actions
         userInfoBtn.setOnAction(e -> {
             UserInfoScreen infoScreen = new UserInfoScreen(currentUser);
             infoScreen.show();
@@ -48,7 +48,7 @@ public class FinanceDashboard {
         });
 
 
-        // 布局
+        // layout
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(30));
         grid.setHgap(20);
@@ -60,7 +60,7 @@ public class FinanceDashboard {
         grid.add(transactionEntryBtn, 0, 1);
         grid.add(financialOverviewBtn, 1, 1);
 
-        // 显示场景
+        // scene setup
         Scene scene = new Scene(grid, 500, 350);
         primaryStage.setScene(scene);
         primaryStage.show();
