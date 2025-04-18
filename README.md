@@ -124,6 +124,9 @@ CREATE TABLE transactions (
     type VARCHAR(10), -- 'income' or 'expense'
     date DATE
 );
+
+INSERT INTO users (name, email, password, role)
+VALUES ('admin', 'admin@admin.com', 'admin', 'admin');
 ```
 
 ---

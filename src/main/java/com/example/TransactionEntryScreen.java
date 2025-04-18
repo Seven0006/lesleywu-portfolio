@@ -1,5 +1,7 @@
 package com.example;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -34,16 +36,27 @@ public class TransactionEntryScreen {
         RadioButton expenseRadio = new RadioButton("Expense");
         incomeRadio.setToggleGroup(typeGroup);
         expenseRadio.setToggleGroup(typeGroup);
+
         HBox typeBox = new HBox(10, incomeRadio, expenseRadio);
 
         // category selection
         Label categoryLabel = new Label("Category:");
         ComboBox<String> categoryBox = new ComboBox<>();
-        categoryBox.getItems().addAll(
-                "Food", "Shopping", "Car", "Rent", "Salary", "Transportation",
-                "Sport", "Entertainment", "Travel", "Health", "Utilities", "Gift",
-                "Education", "Investment", "Other"
-        );
+        ObservableList<String> incomeCategories = FXCollections.observableArrayList("Salary", "Bonus", "Investment",
+                "Other Income");
+        ObservableList<String> expenseCategories = FXCollections.observableArrayList("Food", "Shopping", "Car", "Rent",
+                "Transportation", "Sport", "Entertainment", "Travel", "Health", "Utilities", "Gift", "Education", "Other Expense");
+
+        incomeRadio.setOnAction(e -> {
+            categoryBox.getItems().clear();
+            categoryBox.getItems().addAll(incomeCategories);
+        });
+
+        expenseRadio.setOnAction(e -> {
+            categoryBox.getItems().clear();
+            categoryBox.getItems().addAll(expenseCategories);
+        });
+
 
         // Note input (optional)
         Label noteLabel = new Label("Note (optional):");
