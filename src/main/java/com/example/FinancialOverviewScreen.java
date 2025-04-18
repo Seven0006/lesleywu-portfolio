@@ -8,9 +8,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -49,7 +51,7 @@ public class FinancialOverviewScreen extends Application {
 
         ScrollPane scrollPane = new ScrollPane(transactionList);
         scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(250);
+        scrollPane.setPrefHeight(300);
 
         Button exportButton = new Button("Export");
         exportButton.setOnAction(e -> exportToCSV(stage));
@@ -67,7 +69,7 @@ public class FinancialOverviewScreen extends Application {
 
         updateTransactionList();
 
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 700, 500);
         stage.setScene(scene);
         stage.setTitle("Financial Overview");
         stage.show();
@@ -93,12 +95,12 @@ public class FinancialOverviewScreen extends Application {
         String month = parts[0].toUpperCase();
         int year = Integer.parseInt(parts[1]);
 
-        String sql = "SELECT date, type, SUM(amount) FROM transactions " +
+        String sql = "SELECT id, date, category, amount, type FROM transactions " +
                      "WHERE user_id = ? AND EXTRACT(MONTH FROM date) = ? AND EXTRACT(YEAR FROM date) = ? " +
-                     "GROUP BY date, type ORDER BY date DESC";
+                     "ORDER BY date DESC, id";
 
-        Map<LocalDate, Double> incomeMap = new HashMap<>();
-        Map<LocalDate, Double> expenseMap = new HashMap<>();
+        double totalIncome = 0;
+        double totalExpense = 0;
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -109,71 +111,146 @@ public class FinancialOverviewScreen extends Application {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                int id = rs.getInt("id");
                 LocalDate date = rs.getDate("date").toLocalDate();
+                String category = rs.getString("category");
                 String type = rs.getString("type");
-                double amount = rs.getDouble("sum");
-                if ("income".equalsIgnoreCase(type)) {
-                    incomeMap.put(date, amount);
-                } else {
-                    expenseMap.put(date, amount);
-                }
+                double amount = rs.getDouble("amount");
+
+                String text = String.format("📅 %s | 💬 %s | 💵 $%.2f | 🏷 %s",
+                        date, type, amount, category);
+                Label row = new Label(text);
+
+                Button editBtn = new Button("Edit");
+                Button deleteBtn = new Button("Delete");
+                HBox rowBox = new HBox(10, row, editBtn, deleteBtn);
+                rowBox.setAlignment(Pos.CENTER_LEFT);
+
+                editBtn.setOnAction(e -> showEditDialog(id, amount, category, type, date));
+                deleteBtn.setOnAction(e -> {
+                    deleteTransaction(id);
+                    updateTransactionList();
+                });
+
+                transactionList.getChildren().add(rowBox);
+
+                if ("income".equalsIgnoreCase(type)) totalIncome += amount;
+                else totalExpense += amount;
             }
 
-            Set<LocalDate> allDates = new HashSet<>();
-            allDates.addAll(incomeMap.keySet());
-            allDates.addAll(expenseMap.keySet());
-            List<LocalDate> sortedDates = allDates.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-
-            for (LocalDate d : sortedDates) {
-                double income = incomeMap.getOrDefault(d, 0.0);
-                double expense = expenseMap.getOrDefault(d, 0.0);
-                double balance = income - expense;
-                Label row = new Label("Date: " + d + "    Income: $" + income + "    Expense: $" + expense + "    Balance: $" + balance);
-                transactionList.getChildren().add(row);
-            }
+            double balance = totalIncome - totalExpense;
+            Label summary = new Label("📊 Total Income: $" + totalIncome + "   Total Expense: $" + totalExpense + "   Balance: $" + balance);
+            summary.setStyle("-fx-font-weight: bold;");
+            transactionList.getChildren().add(new Separator());
+            transactionList.getChildren().add(summary);
 
         } catch (Exception e) {
-            transactionList.getChildren().add(new Label("\u274C Error: " + e.getMessage()));
+            transactionList.getChildren().add(new Label("❌ Error: " + e.getMessage()));
+        }
+    }
+
+    private void showEditDialog(int id, double amount, String category, String type, LocalDate date) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Edit Transaction");
+
+        ComboBox<String> typeBox = new ComboBox<>();
+        typeBox.getItems().addAll("income", "expense");
+        typeBox.setValue(type);
+
+        ComboBox<String> categoryBox = new ComboBox<>();
+        categoryBox.getItems().addAll("Food", "Shopping", "Car", "Rent", "Salary", "Transportation",
+                                      "Sport", "Entertainment", "Travel", "Health", "Utilities", "Gift",
+                                      "Education", "Investment", "Other");
+        categoryBox.setValue(category);
+
+        TextField amountField = new TextField(String.valueOf(amount));
+        DatePicker datePicker = new DatePicker(date);
+
+        GridPane grid = new GridPane();
+        grid.setVgap(10);
+        grid.setHgap(10);
+        grid.setPadding(new Insets(10));
+        grid.addRow(0, new Label("Type:"), typeBox);
+        grid.addRow(1, new Label("Category:"), categoryBox);
+        grid.addRow(2, new Label("Amount:"), amountField);
+        grid.addRow(4, new Label("Date:"), datePicker);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(button -> {
+            if (button == ButtonType.OK) {
+                try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                     PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE transactions SET type = ?, category = ?, amount = ?, date = ? WHERE id = ?")) {
+
+                    stmt.setString(1, typeBox.getValue());
+                    stmt.setString(2, categoryBox.getValue());
+                    stmt.setDouble(3, Double.parseDouble(amountField.getText().trim()));
+                    stmt.setDate(4, Date.valueOf(datePicker.getValue()));
+                    stmt.setInt(5, id);
+                    stmt.executeUpdate();
+                } catch (Exception ex) {
+                    showAlert("❌ Edit Failed", ex.getMessage());
+                }
+            }
+            return null;
+        });
+
+        dialog.showAndWait();
+    }
+
+    private void deleteTransaction(int id) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement("DELETE FROM transactions WHERE id = ?")) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            showAlert("❌ Delete Failed", e.getMessage());
         }
     }
 
     private void exportToCSV(Stage stage) {
-        String selected = monthSelector.getValue();
-        if (selected == null) return;
-
-        String[] parts = selected.split(" ");
-        String month = parts[0].toUpperCase();
-        int year = Integer.parseInt(parts[1]);
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save CSV File");
-        fileChooser.setInitialFileName("overview-" + month + "-" + year + ".csv");
+        fileChooser.setInitialFileName("overview.csv");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File file = fileChooser.showSaveDialog(stage);
 
         if (file != null) {
             try (PrintWriter writer = new PrintWriter(file)) {
-                writer.println("Date,Income,Expense,Balance");
-
+                writer.println("Date,Type,Amount,Category");
                 for (javafx.scene.Node node : transactionList.getChildren()) {
-                    if (node instanceof Label) {
-                        String text = ((Label) node).getText();
-                        if (text.startsWith("Date:")) {
-                            String[] partsText = text.split("\\s+");
-                            String date = partsText[1];
-                            String income = partsText[3].replace("$", "");
-                            String expense = partsText[5].replace("$", "");
-                            String balance = partsText[7].replace("$", "");
-                            writer.printf("%s,%s,%s,%s\n", date, income, expense, balance);
+                    if (node instanceof HBox) {
+                        HBox rowBox = (HBox) node;
+                        for (javafx.scene.Node item : rowBox.getChildren()) {
+                            if (item instanceof Label) {
+                                Label label = (Label) item;
+                                if (label.getText().startsWith("📅")) {
+                                String line = label.getText().replace("📅 ", "")
+                                        .replace("💬 ", "")
+                                        .replace("💵 $", "")
+                                        .replace("🏷 ", "")
+                                        .replace("📝 ", "")
+                                        .replace(" | ", ",");
+                                writer.println(line);
+                            }
                         }
                     }
                 }
-
-                transactionList.getChildren().add(new Label("\u2705 Exported to " + file.getName()));
-            } catch (Exception ex) {
-                transactionList.getChildren().add(new Label("\u274C Export failed: " + ex.getMessage()));
+            }
+         } catch (Exception ex) {
+                showAlert("❌ Export Failed", ex.getMessage());
             }
         }
+    }
+
+    private void showAlert(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
     public static void main(String[] args) {

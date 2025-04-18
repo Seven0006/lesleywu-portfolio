@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -24,8 +23,9 @@ public class TransactionEntryScreen {
         Label title = new Label("Transaction Entry");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // automatic date
-        Label dateLabel = new Label("Date: " + LocalDate.now());
+        // Date picker (default to today but user can change)
+        Label dateLabel = new Label("Date:");
+        DatePicker datePicker = new DatePicker(LocalDate.now());
 
         // choice of income or expense
         Label typeLabel = new Label("Type:");
@@ -39,7 +39,15 @@ public class TransactionEntryScreen {
         // category selection
         Label categoryLabel = new Label("Category:");
         ComboBox<String> categoryBox = new ComboBox<>();
-        categoryBox.getItems().addAll("Food", "Shopping", "Car", "Rent", "Salary", "Transportation", "Sport", "Other");
+        categoryBox.getItems().addAll(
+                "Food", "Shopping", "Car", "Rent", "Salary", "Transportation",
+                "Sport", "Entertainment", "Travel", "Health", "Utilities", "Gift",
+                "Education", "Investment", "Other"
+        );
+
+        // Note input (optional)
+        Label noteLabel = new Label("Note (optional):");
+        TextField noteField = new TextField();
 
         // amount input
         Label amountLabel = new Label("Amount:");
@@ -52,16 +60,20 @@ public class TransactionEntryScreen {
 
         // disable editing initially
         categoryBox.setDisable(true);
+        noteField.setEditable(false);
         amountField.setEditable(false);
         incomeRadio.setDisable(true);
         expenseRadio.setDisable(true);
+        datePicker.setDisable(true);
 
         // Edit → buttons enabled
         editBtn.setOnAction(e -> {
             incomeRadio.setDisable(false);
             expenseRadio.setDisable(false);
             categoryBox.setDisable(false);
+            noteField.setEditable(true);
             amountField.setEditable(true);
+            datePicker.setDisable(false);
         });
 
         // Save → to database
@@ -70,10 +82,12 @@ public class TransactionEntryScreen {
                           expenseRadio.isSelected() ? "expense" : null;
 
             String category = categoryBox.getValue();
+            String noteText = noteField.getText().trim();
             String amountText = amountField.getText().trim();
+            LocalDate date = datePicker.getValue();
 
-            if (type == null || category == null || amountText.isEmpty()) {
-                showAlert("Error", "Please fill all fields.");
+            if (type == null || category == null || amountText.isEmpty() || date == null) {
+                showAlert("Error", "Please fill all required fields.");
                 return;
             }
 
@@ -86,7 +100,7 @@ public class TransactionEntryScreen {
             }
 
             // insert transaction into database
-            boolean success = insertTransaction(currentUser.getId(), amount, category, type);
+            boolean success = insertTransaction(currentUser.getId(), amount, category, type, date, noteText);
             if (success) {
                 showAlert("Success", "Transaction saved.");
                 stage.close();
@@ -102,13 +116,16 @@ public class TransactionEntryScreen {
         grid.setVgap(10);
         grid.setHgap(10);
         grid.setAlignment(Pos.CENTER);
-        grid.add(dateLabel, 0, 0, 2, 1);
+        grid.add(dateLabel, 0, 0);
+        grid.add(datePicker, 1, 0);
         grid.add(typeLabel, 0, 1);
         grid.add(typeBox, 1, 1);
         grid.add(categoryLabel, 0, 2);
         grid.add(categoryBox, 1, 2);
-        grid.add(amountLabel, 0, 3);
-        grid.add(amountField, 1, 3);
+        grid.add(noteLabel, 0, 3);
+        grid.add(noteField, 1, 3);
+        grid.add(amountLabel, 0, 4);
+        grid.add(amountField, 1, 4);
 
         HBox buttons = new HBox(15, saveBtn, editBtn, cancelBtn);
         buttons.setAlignment(Pos.CENTER);
@@ -117,13 +134,13 @@ public class TransactionEntryScreen {
         root.setPadding(new Insets(30));
         root.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(root, 450, 320);
+        Scene scene = new Scene(root, 500, 360);
         stage.setScene(scene);
         stage.show();
     }
 
-    private boolean insertTransaction(int userId, double amount, String category, String type) {
-        String sql = "INSERT INTO transactions (user_id, amount, category, type, date) VALUES (?, ?, ?, ?, CURRENT_DATE)";
+    private boolean insertTransaction(int userId, double amount, String category, String type, LocalDate date, String note) {
+        String sql = "INSERT INTO transactions (user_id, amount, category, type, date) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/mydb", "postgres", "mysecretpassword");
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -132,6 +149,7 @@ public class TransactionEntryScreen {
             stmt.setDouble(2, amount);
             stmt.setString(3, category);
             stmt.setString(4, type);
+            stmt.setDate(5, Date.valueOf(date));
             stmt.executeUpdate();
             return true;
 
@@ -148,4 +166,4 @@ public class TransactionEntryScreen {
         alert.setContentText(msg);
         alert.showAndWait();
     }
-}
+} 
