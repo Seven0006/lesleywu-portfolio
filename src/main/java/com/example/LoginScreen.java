@@ -9,7 +9,7 @@ import javafx.geometry.*;
 
 public class LoginScreen extends Application {
 
-    @Override
+    // @Override
     public void start(Stage primaryStage) {
         Label titleLabel = new Label("Personal Finance Management System");
         titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");

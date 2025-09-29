@@ -174,7 +174,6 @@ CMD ["java", "-jar", "app.jar"]
 
 ## ✍️ Author
 
-- **Xinyu Wu, Yuyang Xie, Xiaoming Ma**
-- INFO 5100 - Application Engineer & Dev
+- **Xinyu Wu**
 
 ---
