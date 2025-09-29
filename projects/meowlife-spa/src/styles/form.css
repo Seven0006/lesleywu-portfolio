@@ -1,0 +1,80 @@
+* {
+    box-sizing: border-box;
+  }
+  
+body {
+    margin: 0;
+    padding: 0;
+
+    background-color: #eee;
+
+    font-family: Arial, sans-serif;
+  }
+
+.book-visit-page {
+    max-width: 37.5rem;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid black;
+    border-radius: 0.5rem;
+
+    background-color: #eee;
+  }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 1.5rem;
+
+    color: black;
+  }
+  
+  label {
+    margin-bottom: 0.5rem;
+
+    font-weight: bold;
+  }
+  
+  input,
+  select {
+    padding: 0.5rem;
+
+    font-size: 1rem;
+  }
+  
+  button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+
+    background-color: black;
+    color: white;
+
+    font-size: 1rem;
+  }
+  
+  .error-msg {
+    margin-top: 0.25rem;
+
+    color: red;
+
+    font-size: 0.75rem;
+  }
+  
+  .confirmation-msg {
+    margin-top: 1.5rem;
+
+    color: green;
+
+    font-weight: bold;
+  }
+  
+  .required {
+    margin-left: 0.25rem;
+
+    color: red;
+    
+    font-size: 0.75rem;
+  }
+  
