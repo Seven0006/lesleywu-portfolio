@@ -9,7 +9,7 @@ A JavaFX desktop GUI application that allows users to manage their personal fina
 ### 1. Clone this repository
 
 ```bash
-git clone https://github.com/Seven0006/5100-Final-Project.git 
+git clone https://github.com/Seven0006/lesleywu-portfolio.git
 
 cd your-repo-folder
 ```
