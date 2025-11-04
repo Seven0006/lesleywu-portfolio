@@ -1,6 +1,6 @@
 # Lesley Wu — Personal Portfolio
 
-A curated set of projects across full-stack development (React/Vite) and desktop apps (Java/PostgreSQL). Each project includes a short overview and quick-start steps.
+A curated set of projects across full-stack web (React/Vite), desktop apps (JavaFX/PostgreSQL), and serverless automation (Python on AWS Lambda). Each project includes a short overview and quick-start steps.
 
 ---
 
@@ -8,8 +8,10 @@ A curated set of projects across full-stack development (React/Vite) and desktop
 ```bash
 
 projects/
-├─ financial-management-system/     # Personal Financial Management System (JavaFX + PostgreSQL)
-└─ meowlife-spa/     # React + Vite Single-Page App (cats-themed)
+├─ financial-management-system/       # Personal Financial Management System (JavaFX + PostgreSQL)
+├─ meowlife-spa/                      # React + Vite Single-Page App (cats-themed)
+├─ cat_notifier_lambda/                 # PawsCat City – New Kitten Notifier (Python + AWS Lambda)
+└─ VolleyballClassSignUp/            # Volleyball Auto Sign-Up Bot (Python + AWS Lambda)
 
 ```
 
@@ -38,6 +40,30 @@ projects/
 - Client-side form handling in React state
 - Responsive CSS (360–1200px), consistent color/typography
 - No external JS/CSS libraries (course constraints)
+
+
+### 3) PawsCat City – New Kitten Notifier — Python + AWS Lambda
+**Path:** [`projects/cat_notifier_lambda`](projects/cat_notifier_lambda)  
+**Stack:** Python 3.x, AWS Lambda, Amazon EventBridge, Amazon SES, Requests, BeautifulSoup 
+**Summary:** Serverless scraper that checks PawsCat City’s new-kitten listings and emails me when new arrivals appear.
+
+**Key Features**
+- Scheduled checks via EventBridge (cron/rate)
+- Parses the shelter page and detects new listings (optional S3/DynamoDB for de-dup)
+- Sends alerts via Amazon SES
+- Lightweight, low-cost Lambda deployment
+
+
+### 4) Volleyball Auto Sign-Up Bot — Python + AWS Lambda
+**Path:** [`projects/VolleyballClassSignUp`](projects/VolleyballClassSignUp)  
+**Stack:** Python 3.x, AWS Lambda, Amazon EventBridge, Requests (optional Playwright), BeautifulSoup
+**Summary:** Automatically submits the volleyball class sign-up form right when registration opens so I don’t miss spots.
+
+**Key Features**
+- Precise trigger at sign-up time via EventBridge
+- Builds and posts the form payload; optional fetch for CSRF token/cookies
+- Optional dry-run mode and custom headers/user-agent
+- Playwright-based path available for JS-heavy pages
 
 ---
 
