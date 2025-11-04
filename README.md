@@ -20,7 +20,8 @@ projects/
 ## Projects
 ### 1) Personal Financial Management System — JavaFX + PostgreSQL
 **Path:** [`projects/financial-management-system`](projects/financial-management-system/)  
-**Stack:** Java 17, JavaFX, PostgreSQL, JDBC, Maven/Gradle  
+**Stack:** Java 17, JavaFX, PostgreSQL, JDBC, Maven/Gradle
+
 **Summary:** Desktop finance app with user authentication, transaction CRUD, and monthly analytics (bar/pie charts by category).
 
 **Key Features**
@@ -32,7 +33,8 @@ projects/
 
 ### 2) MeowLife SPA — React + Vite
 **Path:** [`projects/meowlife-spa`](projects/meowlife-spa)  
-**Stack:** React, Vite, plain CSS  
+**Stack:** React, Vite, plain CSS
+
 **Summary:** A playful SPA demonstrating forms, galleries, and responsive layout while following accessibility best practices.
 
 **Key Features**
@@ -45,6 +47,7 @@ projects/
 ### 3) PawsCat City – New Kitten Notifier — Python + AWS Lambda
 **Path:** [`projects/cat_notifier_lambda`](projects/cat_notifier_lambda)  
 **Stack:** Python 3.x, AWS Lambda, Amazon EventBridge, Amazon SES, Requests, BeautifulSoup 
+
 **Summary:** Serverless scraper that checks PawsCat City’s new-kitten listings and emails me when new arrivals appear.
 
 **Key Features**
@@ -57,6 +60,7 @@ projects/
 ### 4) Volleyball Auto Sign-Up Bot — Python + AWS Lambda
 **Path:** [`projects/VolleyballClassSignUp`](projects/VolleyballClassSignUp)  
 **Stack:** Python 3.x, AWS Lambda, Amazon EventBridge, Requests (optional Playwright), BeautifulSoup
+
 **Summary:** Automatically submits the volleyball class sign-up form right when registration opens so I don’t miss spots.
 
 **Key Features**
