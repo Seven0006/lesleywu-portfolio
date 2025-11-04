@@ -43,6 +43,8 @@ projects/
 - Responsive CSS (360–1200px), consistent color/typography
 - No external JS/CSS libraries (course constraints)
 
+![preview](projects/meowlife-spa/pages.png)
+
 
 ### 3) PawsCat City – New Kitten Notifier — Python + AWS Lambda
 **Path:** [`projects/cat_notifier_lambda`](projects/cat_notifier_lambda)  
