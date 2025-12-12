@@ -1,0 +1,92 @@
+.catalog {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0.5rem auto;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.card-item {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  padding: 0.75rem 0.75rem 0.7rem;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+.card-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 0.6rem；
+}
+
+.card-player {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.card-meta {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0 0 0.4rem;
+}
+
+.card-parallel,
+.card-grade {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin: 0;
+}
+
+.card-price {
+  margin-top: 0.7rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.card-stock {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.9rem;
+}
+
+.card-item .primary-btn {
+  margin-top: auto;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.catalog .empty-hint {
+  text-align: center;
+  color: #6b7280;
+  margin: 1rem 0;
+}
