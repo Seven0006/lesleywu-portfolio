@@ -71,6 +71,23 @@ projects/
 - Optional dry-run mode and custom headers/user-agent
 - Playwright-based path available for JS-heavy pages
 
+
+### 5) NBA Cards Market — React + Vite + Express
+**Path:** [`projects/NBA-cards-market`](projects/NBA-cards-market)  
+**Stack:** React, Vite, Express (Node.js), cookie-based sessions, RESTful JSON APIs
+
+**Summary:** A full-stack e-commerce SPA for buying, managing, and administering NBA trading cards. Users can register, log in, browse inventory, manage carts, and place orders, while admins manage card inventory and review all orders.
+
+**Key Features**
+- React + Vite front-end SPA with session-aware navigation and dynamic UI rendering
+- Express backend with RESTful APIs for cards, carts, orders, authentication, and admin controls
+- Secure-ish session-based auth (`sid` cookies), with three roles: user, admin (`nba_admin`), and banned (`dog`)
+- Real-time stock validation, cart quantity rules, and order snapshotting to preserve purchase history
+- Admin dashboard for inventory CRUD operations and order status management
+- No external JS/CSS libraries; uses `fetch()` + Promises for all network operations
+
+![preview](projects/NBA-cards-market/pages.png)
+
 ---
 
 ## Contact
