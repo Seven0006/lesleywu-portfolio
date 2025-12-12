@@ -73,7 +73,7 @@ projects/
 
 
 ### 5) NBA Cards Market — React + Vite + Express
-**Path:** [`projects/NBA-card-market`](projects/NBA-cards-market)  
+**Path:** [`projects/NBA-card-market`](projects/NBA-card-market)  
 **Stack:** React, Vite, Express (Node.js), cookie-based sessions, RESTful JSON APIs
 
 **Summary:** A full-stack e-commerce SPA for buying, managing, and administering NBA trading cards. Users can register, log in, browse inventory, manage carts, and place orders, while admins manage card inventory and review all orders.
