@@ -92,7 +92,7 @@ projects/
 
 
 ### 6) Pet Adoption & Supply Commerce Database — Relational DB Design
-**Path:** [`projects/pet_adoption_database`](projects/pet_adoption_database)  
+**Path:** [`projects/Pet_adoption_database`](projects/Pet_adoption_database)  
 **Stack:** Relational DB (3NF), Crow’s Foot ERD, PK/FK constraints, composite keys
 
 **Summary:** A unified relational database design for a pet adoption shelter with an integrated pet-supply store, supporting end-to-end adoption tracking (pets, breeds/species, vaccinations, applications) and commerce workflows (catalog, orders, line items), with integrity rules and reporting-friendly structure.
