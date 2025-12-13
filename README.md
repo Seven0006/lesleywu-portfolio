@@ -13,7 +13,7 @@ projects/
 ├─ cat_notifier_lambda/                # PawsCat City – New Kitten Notifier (Python + AWS Lambda)
 ├─ VolleyballClassSignUp/              # Volleyball Auto Sign-Up Bot (Python + AWS Lambda)
 ├─ NBA-card-market/                    # NBA Cards Market (React + Vite + Express)
-└─ pet_adoption_database/     # Pet Adoption & Supply Commerce Database (Relational DB design)
+└─ pet_adoption_database/              # Pet Adoption & Supply Commerce Database (Relational DB design)
 
 ```
 
