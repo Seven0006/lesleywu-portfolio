@@ -8,10 +8,12 @@ A curated set of projects across full-stack web (React/Vite), desktop apps (Java
 ```bash
 
 projects/
-├─ financial-management-system/       # Personal Financial Management System (JavaFX + PostgreSQL)
-├─ meowlife-spa/                      # React + Vite Single-Page App (cats-themed)
-├─ cat_notifier_lambda/                 # PawsCat City – New Kitten Notifier (Python + AWS Lambda)
-└─ VolleyballClassSignUp/            # Volleyball Auto Sign-Up Bot (Python + AWS Lambda)
+├─ financial-management-system/        # Personal Financial Management System (JavaFX + PostgreSQL)
+├─ meowlife-spa/                       # React + Vite Single-Page App (cats-themed)
+├─ cat_notifier_lambda/                # PawsCat City – New Kitten Notifier (Python + AWS Lambda)
+├─ VolleyballClassSignUp/              # Volleyball Auto Sign-Up Bot (Python + AWS Lambda)
+├─ NBA-card-market/                    # NBA Cards Market (React + Vite + Express)
+└─ pet_adoption_database/     # Pet Adoption & Supply Commerce Database (Relational DB design)
 
 ```
 
@@ -87,6 +89,20 @@ projects/
 - No external JS/CSS libraries; uses `fetch()` + Promises for all network operations
 
 ![preview](projects/NBA-card-market/pages.png)
+
+
+### 6) Pet Adoption & Supply Commerce Database — Relational DB Design
+**Path:** [`projects/pet_adoption_database`](projects/pet_adoption_database)  
+**Stack:** Relational DB (3NF), Crow’s Foot ERD, PK/FK constraints, composite keys
+
+**Summary:** A unified relational database design for a pet adoption shelter with an integrated pet-supply store, supporting end-to-end adoption tracking (pets, breeds/species, vaccinations, applications) and commerce workflows (catalog, orders, line items), with integrity rules and reporting-friendly structure.
+
+**Key Features**
+- End-to-end adoption pipeline: Species → Breed → Pet → AdoptionApplication (+ ApplicationDetail questionnaire)
+- Medical tracking via many-to-many Pet–Vaccine modeled with PetVaccination (composite PK) to ensure unique vaccination events and auditability.
+- Commerce module: Category → Product → Order → LineItem, with LineItem capturing quantity/unit price at sale for historical accuracy
+- Strong integrity design: explicit business rules for cardinalities, PK/FK relationships, and consistent naming conventions; normalized to **3NF**. 
+- Reporting-ready goals like time-to-adoption, vaccination compliance, and product sales by category
 
 ---
 
